@@ -1,0 +1,310 @@
+/* ---------------- RESET ---------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ---------------- LAYOUT ---------------- */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #d8f5e3;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 60px 20px;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.container {
+  background: #fff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  width: 100%;
+  max-width: 1300px;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ---------------- TYPOGRAPHY ---------------- */
+h2 {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #154c7c;
+  font-size: 40px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 800;
+  color: #333;
+}
+
+/* ---------------- FORM ELEMENTS ---------------- */
+input,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+/* ---------------- BUTTONS ---------------- */
+button {
+  width: 40%;
+  padding: 12px;
+  background-color: #154c7c;
+  color: #fff;
+  font-weight: bold;
+  display:flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+ 
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover {
+  background-color: #103d63;
+}
+
+.add-btn {
+  background-color: #198754;
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-bottom: 20px;
+  float: right;
+}
+
+.add-btn:hover {
+  background-color: #157347;
+}
+
+.edit-btn,
+.delete-btn {
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  white-space: nowrap;
+  border: none;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.delete-btn {
+  background-color: #ff3b3b;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn:hover {
+  background-color: #d00000;
+}
+
+/* ---------------- TABLE STYLING ---------------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  table-layout: fixed;
+  word-wrap: break-word;
+  font-size: 14px;
+}
+.email-column {
+  width: 200px; /* Adjust width as needed */
+}
+.role-column {
+  width: 160px; /* Adjust width as needed */
+}
+.address-column {
+  width: 160px; /* Adjust width as needed */
+}
+.sno-column {
+  width: 60px; /* Adjust width for S.No. column */
+}
+.phone-column {
+  width: 120px; /* Adjust width for Phone column */
+}
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 7px 9px;
+  text-align: center;
+  vertical-align: middle;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  width: 100%;
+}
+
+thead th {
+  background-color: #a3f0c4;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* ---------------- ACTION ICONS ---------------- */
+.action-buttons,
+.action-icons {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  padding-bottom: 1.1rem;
+  padding-top:1.1rem;
+}
+
+.action-icons i {
+  font-size: 14px;
+  padding: 2px;
+  color: #0d6efd;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.action-icons .delete {
+  color: #ff0000ff;
+}
+.action-icons .view {
+  color: #3f3f3fff;
+}
+
+.action-icons i:hover {
+  background-color: #e6f0ff;
+  border-radius: 4px;
+}
+
+/* ---------------- MESSAGES ---------------- */
+.message {
+  margin-top: 15px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.success {
+  color: green;
+}
+
+.error {
+  color: red;
+}
+
+/* ---------------- MODAL STYLING ---------------- */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  padding: 24px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  position: relative;
+}
+
+.modal-content input {
+  width: 90%;
+  padding: 8px;
+  margin: 8px 0;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+}
+
+.modal-content button {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  margin-top: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.modal-content button:hover {
+  background-color: #218838;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* ---------------- UTILITY ---------------- */
+.hidden {
+  display: none;
+}
+
+.container::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* ---------------- RESPONSIVE ---------------- */
+@media (max-width: 768px) {
+  th,
+  td {
+    font-size: 14px;
+    padding: 10px 6px;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 10px;
+    font-size: 13px;
+  }
+
+  .action-icons i {
+    font-size: 14px;
+    padding: 5px;
+  }
+
+  .add-btn {
+    float: none;
+    margin: 10px auto;
+    display: block;
+  }
+
+  .modal-content {
+    width: 95%;
+  }
+}
+

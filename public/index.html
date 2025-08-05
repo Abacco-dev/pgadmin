@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>All Employees</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* View modal layout */
+    #viewContent {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px 10px;
+    }
+    #viewContent p {
+      margin: 5px 0;
+    }
+    #viewContent img {
+      grid-column: span 2;
+      max-width: 300px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    /* Export button style */
+    .export-btn {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .export-btn i {
+      font-size: 16px;
+    }
+    .export-btn:hover {
+      background-color: #0056b3;
+    }
+.add-btn {
+  background-color: #227144;
+  color: white;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-btn:hover {
+  background-color: #1b5c38;
+}
+
+.export-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #0f0fff;
+  margin-bottom: 20px;
+  
+  font-size: 15px;
+  width: 40%;
+  display: flex;
+  align-items: center;
+  user-select: none;
+  padding: 8px;
+  background-color: #037554;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.export-wrapper span{
+  text-align: center;
+  width: 100%;
+}
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+.modal.hidden { display: none; }
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 6px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  position: relative;
+}
+.modal-content button {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.modal-content button:hover {
+  background-color: #0056b3;
+}
+.modal-content .close {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #333;
+}
+.exp_cnt{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-right: 20px;
+}
+    
+  </style>
+
+  <!-- jsPDF + autoTable for PDF export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h2>ALL EMPLOYEES DETAILS</h2>
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+  <button class="add-btn" onclick="openAddForm()">+ Add Employee</button>
+  <div class="export-wrapper" onclick="exportEmployees()" title="Export Employees">
+   
+    <span>+Download</span>
+  </div>
+</div>
+    <table id="contactTable">
+      <thead>
+        <tr>
+          <th class="sno-column">S.No.</th><th>Name</th><th class="email-column">Email</th><th>Emp ID</th><th>Salary</th>
+          <th>Age</th><th class="role-column">Role</th><th class="address-column">Address</th><th class="phone-column">Phone</th><th>File</th><th>Actions</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+
+  <!-- Export Modal -->
+<div id="exportModal" class="modal hidden">
+  <div class="modal-content" style="width: 300px;">
+    <div class=exp_cnt>
+    <span class="close" onclick="closeExportModal()">&times;</span>
+    <h3>Select Export Format</h3>
+    <button onclick="exportData('csv')">CSV</button>
+    <button onclick="exportData('json')">JSON</button>
+    <button onclick="exportData('pdf')">PDF</button>
+    <button onclick="exportData('word')">Word</button>
+  </div></div>
+</div>
+
+  <div id="addModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeAddForm()">&times;</span>
+      <h3>Add Employee</h3>
+      <form id="addForm">
+        <input type="text" id="addName" placeholder="Name" required>
+        <input type="email" id="addEmail" placeholder="Email" required>
+        <input type="text" id="addEmpId" placeholder="Employee ID" required>
+        <input type="number" id="addSalary" placeholder="Salary" required>
+        <input type="number" id="addAge" placeholder="Age" required>
+        <input type="text" id="addRole" placeholder="Role" required>
+        <input type="text" id="addAddress" placeholder="Address" required>
+        <input type="text" id="addPhone" placeholder="Phone Number" required>
+        <input type="file" id="addFile">
+        <button type="button" onclick="saveNewEmployee()">Add Employee</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div id="editModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditForm()">&times;</span>
+      <h3>Edit Employee</h3>
+      <form id="editForm">
+        <input type="hidden" id="editId">
+        <input type="text" id="editName" placeholder="Name" required>
+        <input type="email" id="editEmail" placeholder="Email" required>
+        <input type="text" id="editEmpId" placeholder="Employee ID" required>
+        <input type="number" id="editSalary" placeholder="Salary" required>
+        <input type="number" id="editAge" placeholder="Age" required>
+        <input type="text" id="editRole" placeholder="Role" required>
+        <input type="text" id="editAddress" placeholder="Address" required>
+        <input type="text" id="editPhone" placeholder="Phone Number" required>
+        <input type="file" id="editFile">
+        <button type="button" onclick="saveEdit()">Update Employee</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- View Modal -->
+  <div id="viewModal" class="modal hidden">
+    <div class="modal-content">
+      <span class="close" onclick="closeViewForm()">&times;</span>
+      <h3>Employee Details</h3>
+      <div id="viewContent"></div>
+    </div>
+  </div>
+
+  <script>
+    // Export modal open/close
+    function exportEmployees() {
+      document.getElementById('exportModal').classList.remove('hidden');
+    }
+
+    function closeExportModal() {
+      document.getElementById('exportModal').classList.add('hidden');
+    }
+
+    // Fetch employee data and export based on selected format
+    async function exportData(format) {
+      closeExportModal();
+      const res = await fetch('/api/contacts');
+      if (!res.ok) {
+        alert('Failed to fetch data for export');
+        return;
+      }
+      const data = await res.json();
+      if (!data.length) {
+        alert('No data available to export.');
+        return;
+      }
+
+      if (format === 'csv') {
+        exportToCSV(data);
+      } else if (format === 'json') {
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        downloadBlob(blob, 'employees.json');
+      } else if (format === 'pdf') {
+        exportToPDF(data);
+      } else if (format === 'word') {
+        exportToWord(data);
+      }
+    }
+
+    function exportToCSV(data) {
+      const header = Object.keys(data[0]);
+      const rows = data.map(row => header.map(field => `"${(row[field] ?? '').toString().replace(/"/g, '""')}"`));
+      const csv = [header.join(','), ...rows.map(r => r.join(','))].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      downloadBlob(blob, 'employees.csv');
+    }
+
+    function exportToPDF(data) {
+      // Using jspdf from global window.jspdf and autotable plugin
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const headers = [Object.keys(data[0])];
+      const rows = data.map(row => Object.values(row));
+
+      doc.autoTable({
+        head: headers,
+        body: rows,
+        styles: { fontSize: 8 },
+        margin: { top: 20 },
+      });
+
+      doc.save('employees.pdf');
+    }
+
+    function exportToWord(data) {
+      const html = `
+        <html>
+          <head><meta charset="utf-8"></head>
+          <body>
+            <table border="1" style="border-collapse: collapse;">
+              <thead><tr>${Object.keys(data[0]).map(k => `<th>${k}</th>`).join('')}</tr></thead>
+              <tbody>${data.map(row => `<tr>${Object.values(row).map(val => `<td>${val}</td>`).join('')}</tr>`).join('')}</tbody>
+            </table>
+          </body>
+        </html>`;
+      const blob = new Blob(['\ufeff' + html], { type: 'application/msword' });
+      downloadBlob(blob, 'employees.doc');
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    // Existing CRUD and UI code
+    async function fetchContacts() {
+      const res = await fetch('/api/contacts');
+      const contacts = await res.json();
+      const tbody = document.querySelector('#contactTable tbody');
+      tbody.innerHTML = '';
+      contacts.forEach((c, i) => {
+        const fileLink = c.file_path ? `<a href="/${c.file_path.replace(/\\/g,'/')}" target="_blank">View</a>` : '—';
+        const viewPhoto = c.file_path ? `'/${c.file_path.replace(/\\/g,'/')}'` : `null`;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${i+1}</td>
+          <td>${c.name}</td><td>${c.email}</td><td>${c.emp_id}</td><td>${c.salary}</td>
+          <td>${c.age}</td><td>${c.role}</td><td>${c.address||''}</td><td>${c.phone_number||''}</td>
+          <td>${fileLink}</td>
+          <td class="action-icons">
+            <i class="fas fa-eye view" title="View"
+              onclick="openView(${c.id},'${c.name}','${c.email}','${c.emp_id}',${c.salary},${c.age},'${c.role}','${c.address}','${c.phone_number}',${viewPhoto})"></i>
+            <i class="fas fa-pen" title="Edit"
+              onclick="openEdit(${c.id},'${c.name}','${c.email}','${c.emp_id}',${c.salary},${c.age},'${c.role}','${c.address}','${c.phone_number}')"></i>
+            <i class="fas fa-trash delete" title="Delete" onclick="deleteContact(${c.id})"></i>
+          </td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    function openAddForm(){ document.getElementById('addModal').classList.remove('hidden'); }
+    function closeAddForm(){ document.getElementById('addModal').classList.add('hidden'); }
+    function closeEditForm(){ document.getElementById('editModal').classList.add('hidden'); }
+    function closeViewForm(){ document.getElementById('viewModal').classList.add('hidden'); }
+
+    function openEdit(id,name,email,emp_id,salary,age,role,address,phone_number){
+      document.getElementById('editId').value = id;
+      document.getElementById('editName').value = name;
+      document.getElementById('editEmail').value = email;
+      document.getElementById('editEmpId').value = emp_id;
+      document.getElementById('editSalary').value = salary;
+      document.getElementById('editAge').value = age;
+      document.getElementById('editRole').value = role;
+      document.getElementById('editAddress').value = address;
+      document.getElementById('editPhone').value = phone_number;
+      document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    function openView(id,name,email,emp_id,salary,age,role,address,phone_number,photo) {
+      const viewDiv = document.getElementById('viewContent');
+      viewDiv.innerHTML = `
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Employee ID:</strong> ${emp_id}</p>
+        <p><strong>Salary:</strong> ${salary}</p>
+        <p><strong>Age:</strong> ${age}</p>
+        <p><strong>Role:</strong> ${role}</p>
+        <p><strong>Address:</strong> ${address}</p>
+        <p><strong>Phone Number:</strong> ${phone_number}</p>
+        ${photo ? `<img src=${photo} alt="Employee photo" />` : ''}
+      `;
+      document.getElementById('viewModal').classList.remove('hidden');
+    }
+
+    async function deleteContact(id) {
+      if (!confirm('Are you sure you want to delete this contact?')) return;
+      await fetch('/api/contacts/' + id, { method: 'DELETE' });
+      await fetchContacts();
+    }
+
+    async function saveNewEmployee() {
+      const form = document.getElementById('addForm');
+      const formData = new FormData();
+      formData.append('name', document.getElementById('addName').value);
+      formData.append('email', document.getElementById('addEmail').value);
+      formData.append('emp_id', document.getElementById('addEmpId').value);
+      formData.append('salary', document.getElementById('addSalary').value);
+      formData.append('age', document.getElementById('addAge').value);
+      formData.append('role', document.getElementById('addRole').value);
+      formData.append('address', document.getElementById('addAddress').value);
+      formData.append('phone_number', document.getElementById('addPhone').value);
+      const fileInput = document.getElementById('addFile');
+      if (fileInput.files.length > 0) formData.append('file', fileInput.files[0]);
+
+      const res = await fetch('/api/contacts', { method: 'POST', body: formData });
+      if (res.ok) {
+        closeAddForm();
+        await fetchContacts();
+        form.reset();
+      } else {
+        alert('Failed to add employee');
+      }
+    }
+
+    async function saveEdit() {
+      const id = document.getElementById('editId').value;
+      const formData = new FormData();
+      formData.append('name', document.getElementById('editName').value);
+      formData.append('email', document.getElementById('editEmail').value);
+      formData.append('emp_id', document.getElementById('editEmpId').value);
+      formData.append('salary', document.getElementById('editSalary').value);
+      formData.append('age', document.getElementById('editAge').value);
+      formData.append('role', document.getElementById('editRole').value);
+      formData.append('address', document.getElementById('editAddress').value);
+      formData.append('phone_number', document.getElementById('editPhone').value);
+      const fileInput = document.getElementById('editFile');
+      if (fileInput.files.length > 0) formData.append('file', fileInput.files[0]);
+
+      const res = await fetch('/api/contacts/' + id, { method: 'PUT', body: formData });
+      if (res.ok) {
+        closeEditForm();
+        await fetchContacts();
+      } else {
+        alert('Failed to update employee');
+      }
+    }
+
+    // Load table on page load
+    fetchContacts();
+  </script>
+</body>
+</html>
